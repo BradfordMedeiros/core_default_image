@@ -11,22 +11,85 @@
             <div id="app_title">
                 [no-dogma] HUB
                 <div id="app_subtitle">share haxor content</div>
-
                 <div id="options">
-                    <div class="option">status</div>
-                    <div class="option">install new software</div>
+                    <div class="option">software</div>
                     <div class="option">diagnostics</div>
+                    <div class="option">configure wifi</div>
                 </div>
             </div>
         </div>
         <div id="main_body">
+            <div id="main_body_title">Configure Wifi</div>
+            <div class="status_title">
+                Is Connected To a Network
+                <div class="status_subtitle">false</div>
+            </div>
+            <div class="status_title">
+                Is Connected To the Internet
+                <div class="status_subtitle">false</div>
+            </div>
+            <div class="configure_wifi">
+                <div>wifi access point name: <input /></div>
+                <div>wifi access point password: <input /></div>
+                <button>configure</button>
+            </div>
+            <!--
+            <div id="main_body_title">Diagnostics</div>
+            <div class="status_title">
+                Installed Software
+                <div class="status_subtitle">automate</div>
+            </div>
+            <div class="status_title">
+                Software Container
+                <div class="status_subtitle">dockerhub.com/BradfordMedeiros/automate_core_arm_0.7.0</div>
+            </div>
+            <div class="status_title">
+                Install Date
+                <div class="status_subtitle">3/21/2018</div>
+            </div>
+            <div class="status_title">
+                Ip Address
+                <div class="status_subtitle">192.34.44.32</div>
+            </div>
+            <div class="status_title">
+                Mac Address
+                <div class="status_subtitle">192.34.44.32</div>
+            </div>
+            -->
+
+            <!--
             <div id="main_body_title">Available Software</div>
             <div id="main_body_sw">
                 <div class="available_sw">automate</div>
-            </div>
+            </div>-->
         </div>
     </div>
 </body>
+
+<style>
+    .status_title {
+        font-size: 32px;
+        color: whitesmoke;
+        padding: 24px;
+    }
+    .status_subtitle{
+        font-size: 18px;
+        color: rgb(180,180,180);
+    }
+    .configure_wifi {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 24px;
+        color: lightgrey;
+    }
+</style>
+<script>
+
+
+
+</script>
 </html>
 
 
