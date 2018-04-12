@@ -19,7 +19,7 @@
             </div>
         </div>
         <div id="main_body">
-            <div id="main_body_title">Configure Wifi</div>
+            <!--<div id="main_body_title">Configure Wifi</div>
             <div class="status_title">
                 Is Connected To a Network
                 <div class="status_subtitle">false</div>
@@ -32,7 +32,7 @@
                 <div>wifi access point name: <input /></div>
                 <div>wifi access point password: <input /></div>
                 <button>configure</button>
-            </div>
+            </div>-->
             <!--
             <div id="main_body_title">Diagnostics</div>
             <div class="status_title">
@@ -57,37 +57,48 @@
             </div>
             -->
 
-            <!--
+
             <div id="main_body_title">Available Software</div>
             <div id="main_body_sw">
-                <div class="available_sw">automate</div>
-            </div>-->
+                <!--<div class="available_sw">automate</div>-->
+            </div>
         </div>
     </div>
 </body>
 
-<style>
-    .status_title {
-        font-size: 32px;
-        color: whitesmoke;
-        padding: 24px;
-    }
-    .status_subtitle{
-        font-size: 18px;
-        color: rgb(180,180,180);
-    }
-    .configure_wifi {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        padding: 24px;
-        color: lightgrey;
-    }
-</style>
+
 <script>
+    const getAvailableSoftware = () => new Promise((resolve, reject) => {
+       fetch('/software').then(response => {
+           response.json().then(resolve).catch(reject);
+       }).catch(reject);
+    });
+
+    const setSoftwareAsActive = () => new Promise((resolve, reject) => {
+
+    });
+
+    const addSoftware = software => {
+        const main_sw = document.querySelector('#main_body_sw');
+        main_sw.innerText = '';
+        const elements = software.map(createSoftwareElements);
+        elements.forEach(element => {
+           main_sw.appendChild(element);
+        });
+    };
+    const createSoftwareElements = softwareElement => {
+      console.log(softwareElement);
+      const element = document.createElement('div');
+      element.className = 'available_sw';
+      element.innerText =  softwareElement.name;
+      element.style = `background: ${softwareElement.imageUrl}; background-size: cover;`;
+      return element;
+    };
 
 
+    getAvailableSoftware().then(softwareList => {
+        addSoftware(softwareList);
+    });
 
 </script>
 </html>
