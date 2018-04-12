@@ -12,93 +12,107 @@
                 [no-dogma] HUB
                 <div id="app_subtitle">share haxor content</div>
                 <div id="options">
-                    <div class="option">software</div>
-                    <div class="option">diagnostics</div>
-                    <div class="option">configure wifi</div>
+                    <div onclick="swapScreens('software')" class="option">software</div>
+                    <div onclick="swapScreens('diagnostic')" class="option">diagnostics</div>
+                    <div onclick="swapScreens('configure')" class="option">configure wifi</div>
                 </div>
             </div>
         </div>
-        <div id="main_body">
-            <!--<div id="main_body_title">Configure Wifi</div>
-            <div class="status_title">
-                Is Connected To a Network
-                <div class="status_subtitle">false</div>
-            </div>
-            <div class="status_title">
-                Is Connected To the Internet
-                <div class="status_subtitle">false</div>
-            </div>
-            <div class="configure_wifi">
-                <div>wifi access point name: <input /></div>
-                <div>wifi access point password: <input /></div>
-                <button>configure</button>
-            </div>-->
-            <!--
-            <div id="main_body_title">Diagnostics</div>
-            <div class="status_title">
-                Installed Software
-                <div class="status_subtitle">automate</div>
-            </div>
-            <div class="status_title">
-                Software Container
-                <div class="status_subtitle">dockerhub.com/BradfordMedeiros/automate_core_arm_0.7.0</div>
-            </div>
-            <div class="status_title">
-                Install Date
-                <div class="status_subtitle">3/21/2018</div>
-            </div>
-            <div class="status_title">
-                Ip Address
-                <div class="status_subtitle">192.34.44.32</div>
-            </div>
-            <div class="status_title">
-                Mac Address
-                <div class="status_subtitle">192.34.44.32</div>
-            </div>
-            -->
-
-
-            <div id="main_body_title">Available Software</div>
-            <div id="main_body_sw">
-                <!--<div class="available_sw">automate</div>-->
-            </div>
-        </div>
+        <div id="main_body" />
     </div>
 </body>
 
 
 <script>
+    // data ////////////////////////
     const getAvailableSoftware = () => new Promise((resolve, reject) => {
        fetch('/software').then(response => {
            response.json().then(resolve).catch(reject);
        }).catch(reject);
     });
-
     const setSoftwareAsActive = () => new Promise((resolve, reject) => {
 
     });
+    //////////////////////////////
 
+    const createSimpleElement = (header, subtitle) => {
+        const networkElement = document.createElement('div');
+        networkElement.className = 'status_title';
+        networkElement.append(header);
+
+        const statusSubtitleElement = document.createElement('div');
+        statusSubtitleElement.className = 'status_subtitle';
+        statusSubtitleElement.innerText = subtitle;
+        networkElement.append(statusSubtitleElement);
+        return networkElement;
+    };
+    const createTitle = title => {
+        const titleElement = document.createElement('div');
+        titleElement.id = 'main_body_title';
+        titleElement.innerText = title;
+        return titleElement;
+    };
+
+    const createSoftwareElements = softwareElement => {
+        const element = document.createElement('div');
+        element.className = 'available_sw';
+        element.innerText =  softwareElement.name;
+        element.style = `background: ${softwareElement.imageUrl}; background-size: cover;`;
+        return element;
+    };
     const addSoftware = software => {
-        const main_sw = document.querySelector('#main_body_sw');
+        const main_sw = document.createElement('div');
+        main_sw.id = 'main_body_sw';
         main_sw.innerText = '';
         const elements = software.map(createSoftwareElements);
         elements.forEach(element => {
            main_sw.appendChild(element);
         });
+        return main_sw;
     };
-    const createSoftwareElements = softwareElement => {
-      console.log(softwareElement);
-      const element = document.createElement('div');
-      element.className = 'available_sw';
-      element.innerText =  softwareElement.name;
-      element.style = `background: ${softwareElement.imageUrl}; background-size: cover;`;
-      return element;
+
+    const swapToSoftwareScreen = software => {
+        const element = document.querySelector('#main_body');
+        element.innerText = '';
+        element.append(createTitle('Software'));
+        const addSoftwareElements = addSoftware(software);
+        element.append(addSoftwareElements);
+    };
+    const swapToDiagnostics = () => {
+        const element = document.querySelector('#main_body');
+        element.innerText = '';
+        element.append(createTitle('Diagnostics'));
+        element.append(createSimpleElement('Installed Software', 'automate'));
+        element.append(createSimpleElement('Software Container', 'dockerhub.com/BradfordMedeiros/automate_core_arm_0.7.0'));
+        element.append(createSimpleElement('Installed Software', 'automate'));
+
+    };
+
+    const swapToConfigure = () => {
+        const element = document.querySelector('#main_body');
+        element.innerText = '';
+        element.append(createTitle('Configure'));
+        element.append(createSimpleElement('Is Connected to a Network', 'false'));
+        element.append(createSimpleElement('Is Connected to Internet', 'false'));
     };
 
 
-    getAvailableSoftware().then(softwareList => {
-        addSoftware(softwareList);
-    });
+    const screenToDrawMap = {
+      software: () => {
+          getAvailableSoftware().then(software => {
+              swapToSoftwareScreen(software);
+          });
+      },
+      diagnostic: swapToDiagnostics,
+      configure: swapToConfigure,
+    };
+
+    const swapScreens = screen => {
+        const drawScreen = screenToDrawMap[screen];
+        drawScreen();
+    };
+
+    swapScreens('software');
 
 </script>
 </html>
