@@ -65,6 +65,8 @@ body {
     font-size: 20px;
     color: #f5f5f59c;
     margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
 }
 #main_body_sw {
     flex-grow: 1;
@@ -83,7 +85,24 @@ body {
     box-shadow: 0px 0px 10px 1px rgb(50,50,50);
     margin: 8px;
     cursor: pointer;
+    position: relative;
 }
+
+.selected::after {
+    position: absolute;
+    border-top: 4px solid #ababab;
+    border-bottom: 4px solid #ababab;
+    margin-bottom: -8px;
+    margin-top: -8px;
+
+    content: '';
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+}
+
 .available_sw:hover {
     box-shadow: 0px 10px 18px 2px rgb(20,20,20);
 

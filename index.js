@@ -11,13 +11,21 @@ app.get('/software', (req, res) => {
    res.jsonp(software.getAvailableSoftware());
 });
 app.post('/software/:dockerUrl', async (req, res) => {
-   const dockerUrl = req.params.dockerUrl;
+   const dockerUrl = decodeURIComponent(req.params.dockerUrl);
    try {
-       await software.setSoftwareAsActive(dockerUrl);
-       res.send('ok');
+       setTimeout(async () => {
+           await software.setSoftwareAsActive(dockerUrl);
+           res.send('ok');
+       }, 2000);
+
    }catch(e){
        res.status(500).jsonp({ error: 'internal server error' })
    }
+});
+
+app.get('/software/installed', (req, res) => {
+   const response = software.getActiveSoftware();
+   res.status(200).jsonp(response);
 });
 
 app.get('/', (req, res) => {

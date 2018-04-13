@@ -14,7 +14,6 @@
                 <div id="options">
                     <div onclick="swapScreens('software')" class="option">software</div>
                     <div onclick="swapScreens('diagnostic')" class="option">diagnostics</div>
-                    <div onclick="swapScreens('configure')" class="option">configure wifi</div>
                 </div>
             </div>
         </div>
@@ -30,8 +29,15 @@
            response.json().then(resolve).catch(reject);
        }).catch(reject);
     });
-    const setSoftwareAsActive = () => new Promise((resolve, reject) => {
-
+    const setSoftwareAsActive = dockerUrl => new Promise((resolve, reject) => {
+        fetch(`/software/${encodeURIComponent(dockerUrl)}`, {
+            method: 'post',
+        }).then(resolve).catch(reject);
+    });
+    const getActiveSoftware  = () => new Promise((resolve, reject) => {
+        fetch('/software/installed').then(response => {
+            response.json().then(resolve).catch(reject);
+        }).catch(reject);
     });
     //////////////////////////////
 
@@ -46,73 +52,95 @@
         networkElement.append(statusSubtitleElement);
         return networkElement;
     };
-    const createTitle = title => {
+    const createTitle = (title, rightElement) => {
         const titleElement = document.createElement('div');
         titleElement.id = 'main_body_title';
         titleElement.innerText = title;
+
+        if  (rightElement){
+            const infoContent = document.createElement('div');
+            infoContent.innerText = rightElement;
+            titleElement.append(infoContent)
+        }
+
+
         return titleElement;
     };
 
-    const createSoftwareElements = softwareElement => {
+    const createSoftwareElement = (softwareElement, isActive, onClick) => {
         const element = document.createElement('div');
         element.className = 'available_sw';
+        if (isActive){
+            element.className = element.className + ' selected';
+        }
         element.innerText =  softwareElement.name;
         element.style = `background: ${softwareElement.imageUrl}; background-size: cover;`;
+        element.onclick = () => {
+            onClick(softwareElement);
+        };
         return element;
     };
-    const addSoftware = software => {
+    const addSoftware = (software, activeSoftware, onClick) => {
         const main_sw = document.createElement('div');
         main_sw.id = 'main_body_sw';
         main_sw.innerText = '';
-        const elements = software.map(createSoftwareElements);
+        const elements = software.map(el => createSoftwareElement(el, el.name === activeSoftware.name, onClick));
         elements.forEach(element => {
            main_sw.appendChild(element);
         });
         return main_sw;
     };
 
-    const swapToSoftwareScreen = software => {
+    const swapToSoftwareScreen = (software, activeSoftware, onSelectSoftware) => {
         const element = document.querySelector('#main_body');
         element.innerText = '';
-        element.append(createTitle('Software'));
-        const addSoftwareElements = addSoftware(software);
+        element.append(createTitle('Software', `Currently Installed: ${activeSoftware.name}`));
+        const addSoftwareElements = addSoftware(software, activeSoftware, onSelectSoftware);
         element.append(addSoftwareElements);
     };
-    const swapToDiagnostics = () => {
+    const swapToDiagnostics = (softwareName, dockerUrl) => {
         const element = document.querySelector('#main_body');
         element.innerText = '';
         element.append(createTitle('Diagnostics'));
-        element.append(createSimpleElement('Installed Software', 'automate'));
-        element.append(createSimpleElement('Software Container', 'dockerhub.com/BradfordMedeiros/automate_core_arm_0.7.0'));
-        element.append(createSimpleElement('Installed Software', 'automate'));
-
-    };
-
-    const swapToConfigure = () => {
-        const element = document.querySelector('#main_body');
-        element.innerText = '';
-        element.append(createTitle('Configure'));
-        element.append(createSimpleElement('Is Connected to a Network', 'false'));
-        element.append(createSimpleElement('Is Connected to Internet', 'false'));
+        element.append(createSimpleElement('Installed Software', softwareName));
+        element.append(createSimpleElement('Software Container', dockerUrl));
     };
 
 
     const screenToDrawMap = {
       software: () => {
-          getAvailableSoftware().then(software => {
-              swapToSoftwareScreen(software);
+          const responsePromise = Promise.all([getAvailableSoftware(), getActiveSoftware()]);
+          responsePromise.then(result => {
+             const availableSoftware = result[0];
+             const activeSoftware = result[1];
+             swapToSoftwareScreen(availableSoftware, activeSoftware, sw => {
+                 swapScreens('software', true);
+                 setSoftwareAsActive(sw.dockerUrl).then(() => {
+                     if (activeSoftware.name !== sw.name){
+                         if (currentScreen === 'software'){
+                             swapScreens('software');
+                         }
+                     }
+                 })
+             });
           });
       },
-      diagnostic: swapToDiagnostics,
-      configure: swapToConfigure,
+      diagnostic: () => {
+          getActiveSoftware().then(software => {
+              swapToDiagnostics(software.name, software.dockerUrl);
+          });
+      },
     };
 
-    const swapScreens = screen => {
+    const swapScreens = (screen) => {
         const drawScreen = screenToDrawMap[screen];
+        currentScreen = screen;
         drawScreen();
     };
 
-    swapScreens('software');
+
+    let currentScreen = 'software';
+    swapScreens(currentScreen);
 
 </script>
 </html>
