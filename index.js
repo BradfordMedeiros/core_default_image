@@ -1,9 +1,12 @@
 
 const express  = require('express');
 const path = require('path');
-const software = require('./src/software');
+const getSoftware = require('./src/getSoftware');
+
+const IS_PRODUCTION = false;
 
 const HTML_FILE = path.resolve('./index.html');
+const software = getSoftware(IS_PRODUCTION);
 
 const app = express();
 
@@ -13,11 +16,8 @@ app.get('/software', (req, res) => {
 app.post('/software/:dockerUrl', async (req, res) => {
    const dockerUrl = decodeURIComponent(req.params.dockerUrl);
    try {
-       setTimeout(async () => {
-           await software.setSoftwareAsActive(dockerUrl);
-           res.send('ok');
-       }, 2000);
-
+       await software.setSoftwareAsActive(dockerUrl);
+       res.send('ok');
    }catch(e){
        res.status(500).jsonp({ error: 'internal server error' })
    }
