@@ -6,7 +6,7 @@ const getSoftware = (isProduction, namedPipeLocation) => {
     const changeImage = imageName => new Promise((resolve, reject) => {
         if (isProduction){
             // @todo need to escape this better so cannot  just inject anything here
-            child_process.exec(`use_image '${imageName}' >  ${namedPipeLocation}`, err => {       // @todo call real binary
+            child_process.exec(`/opt/automated/use_image.sh '${imageName}' >  ${namedPipeLocation}`, err => {       // @todo call real binary
                 if(err){
                     reject(err);
                 }else{
