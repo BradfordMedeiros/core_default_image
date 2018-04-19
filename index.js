@@ -1,12 +1,18 @@
 
 const express  = require('express');
 const path = require('path');
+const process = require('process');
 const getSoftware = require('./src/getSoftware');
 
-const IS_PRODUCTION = false;
+const IS_PRODUCTION = true;
 
 const HTML_FILE = path.resolve('./index.html');
-const software = getSoftware(IS_PRODUCTION);
+const NAMED_PIPE_LOCATION =  process.env.AUTOMATE_DOCKER_PIPE || '/opt/automated/pipe';
+
+console.log('production: ', IS_PRODUCTION);
+console.log('named Pipe: ', NAMED_PIPE_LOCATION);
+
+const software = getSoftware(IS_PRODUCTION, NAMED_PIPE_LOCATION);
 
 const app = express();
 

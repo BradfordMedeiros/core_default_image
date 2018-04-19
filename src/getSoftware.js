@@ -2,10 +2,11 @@
 
 const child_process = require('child_process');
 
-const getSoftware = (isProduction) => {
+const getSoftware = (isProduction, namedPipeLocation) => {
     const changeImage = imageName => new Promise((resolve, reject) => {
         if (isProduction){
-            child_process.exec('echo hello', err => {       // @todo call real binary
+            // @todo need to escape this better so cannot  just inject anything here
+            child_process.exec(`use_image '${imageName}' >  ${namedPipeLocation}`, err => {       // @todo call real binary
                 if(err){
                     reject(err);
                 }else{
