@@ -4,15 +4,17 @@ const path = require('path');
 const process = require('process');
 const getSoftware = require('./src/getSoftware');
 
-const IS_PRODUCTION = true;
+const IS_PRODUCTION = process.env.DEBUG != 'true';
 
 const HTML_FILE = path.resolve('./index.html');
 const NAMED_PIPE_LOCATION =  process.env.AUTOMATE_DOCKER_PIPE || '/opt/automated/pipe';
+const PACKAGE_FOLDER = process.env.AUTOMATE_PACKAGE_PATH || '/opt/automated/packages';
 
 console.log('production: ', IS_PRODUCTION);
 console.log('named Pipe: ', NAMED_PIPE_LOCATION);
+console.log('package folder: ', PACKAGE_FOLDER);
 
-const software = getSoftware(IS_PRODUCTION, NAMED_PIPE_LOCATION);
+const software = getSoftware(IS_PRODUCTION, NAMED_PIPE_LOCATION, PACKAGE_FOLDER);
 
 const app = express();
 

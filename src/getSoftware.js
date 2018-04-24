@@ -2,7 +2,7 @@
 
 const child_process = require('child_process');
 
-const getSoftware = (isProduction, namedPipeLocation) => {
+const getSoftware = (isProduction, namedPipeLocation, packageFolder) => {
     const changeImage = imageName => new Promise((resolve, reject) => {
         if (isProduction){
             // @todo need to escape this better so cannot  just inject anything here
