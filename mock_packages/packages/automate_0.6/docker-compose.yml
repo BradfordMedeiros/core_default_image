@@ -1,0 +1,6 @@
+version: '2'
+services:
+  automate:
+    image: "bradfordmedeiros/automate_0.6.0"
+    ports:
+      - "9000:9000"

@@ -17,21 +17,27 @@ Packages idea:
 // then you could upload multiple automate.paks and move between them easily.
 
 /automate_controller (volume for automate)
+       /packages
+            /automate_0.1
+			    volumes/
+				    automate.pak // zipped folder structure that gets mounted on file system
+				    automate2.pak
+			    config/
+				    image.png
+				    docker-compose.yml
+				    config.json
+		     /automate_0.2
+			    volumes/
+				    automate.pak	
 
-		/automate_0.1
-			volumes/
-				automate.pak // zipped folder structure that gets mounted on file system
-				automate2.pak
-			config/
-				image.png
-				docker-compose.yml
-				config.json
-		/automate_0.2
-			volumes/
-				automate.pak	
-
-		/stork_0.2
-			volumes/
-				stork.pak
+		     /stork_0.2
+			    volumes/
+				    stork.pak
+		/info
+		    /active_package   { packageSet: true/false, packageName: <optional string> }
+		      
+		    
+		   
+		    		    
 		
 ~~~~
