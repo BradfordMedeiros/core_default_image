@@ -84,7 +84,7 @@
         const main_sw = document.createElement('div');
         main_sw.id = 'main_body_sw';
         main_sw.innerText = '';
-        const elements = software.map(el => createSoftwareElement(el, el.name === activeSoftware.name, onClick));
+        const elements = software.map(el => createSoftwareElement(el, activeSoftware && el.name === activeSoftware.name, onClick));
         elements.forEach(element => {
            main_sw.appendChild(element);
         });
@@ -94,7 +94,7 @@
     const swapToSoftwareScreen = (software, activeSoftware, onSelectSoftware) => {
         const element = document.querySelector('#main_body');
         element.innerText = '';
-        element.append(createTitle('Software', `Currently Installed: ${activeSoftware.name}`));
+        element.append(createTitle('Software', `Currently Installed: ${activeSoftware ? activeSoftware.name : 'none'}`));
         const addSoftwareElements = addSoftware(software, activeSoftware, onSelectSoftware);
         element.append(addSoftwareElements);
     };
@@ -116,7 +116,7 @@
              swapToSoftwareScreen(availableSoftware, activeSoftware, sw => {
                  swapScreens('software', true);
                  setSoftwareAsActive(sw.dockerUrl).then(() => {
-                     if (activeSoftware.name !== sw.name){
+                     if (activeSoftware && activeSoftware.name !== sw.name){
                          if (currentScreen === 'software'){
                              swapScreens('software');
                          }
