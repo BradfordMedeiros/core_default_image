@@ -25,13 +25,12 @@ app.get('/software', async (req, res) => {
    res.jsonp(await software.getAvailableSoftware());
 });
 
-app.post('/software/:dockerUrl', async (req, res) => {
-   const dockerUrl = decodeURIComponent(req.params.dockerUrl);
+app.post('/software/:packageName', async (req, res) => {
+   const packageName = decodeURIComponent(req.params.packageName);
    try {
-       await software.setSoftwareAsActive(dockerUrl);
+       await software.setSoftwareAsActive(packageName);
        res.send('ok');
    }catch(e){
-       console.log(e.toString());
        res.status(500).jsonp({ error: 'internal server error' })
    }
 });

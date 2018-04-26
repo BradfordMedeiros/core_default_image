@@ -29,8 +29,8 @@
            response.json().then(resolve).catch(reject);
        }).catch(reject);
     });
-    const setSoftwareAsActive = dockerUrl => new Promise((resolve, reject) => {
-        fetch(`/software/${encodeURIComponent(dockerUrl)}`, {
+    const setSoftwareAsActive = packageName => new Promise((resolve, reject) => {
+        fetch(`/software/${encodeURIComponent(packageName)}`, {
             method: 'post',
         }).then(resolve).catch(reject);
     });
@@ -115,7 +115,7 @@
              const activeSoftware = result[1];
              swapToSoftwareScreen(availableSoftware, activeSoftware, sw => {
                  swapScreens('software', true);
-                 setSoftwareAsActive(sw.dockerUrl).then(() => {
+                 setSoftwareAsActive(sw.name).then(() => {
                      if (activeSoftware && activeSoftware.name !== sw.name){
                          if (currentScreen === 'software'){
                              swapScreens('software');

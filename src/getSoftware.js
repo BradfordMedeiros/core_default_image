@@ -4,6 +4,7 @@ const path = require('path');
 const getSoftware = (packageFolder, changeImage) => {
 
     const PACKAGES_PACKAGE_FOLDER = path.resolve(packageFolder, 'packages');
+    const getPackageFolder = packageName => path.resolve(PACKAGES_PACKAGE_FOLDER, packageName);
     const getManifestInfo = automatePackageFolder => new Promise((resolve, reject) => {
         fs.readFile(path.resolve(automatePackageFolder, 'manifest.json'), (err, result) => {
            if (err){
@@ -21,14 +22,13 @@ const getSoftware = (packageFolder, changeImage) => {
                 reject(err);
                 return;
             }
-            Promise.all(results.map(result => getManifestInfo(path.resolve(PACKAGES_PACKAGE_FOLDER, result)))).then(resolve).catch(reject);
+            Promise.all(results.map(result => getManifestInfo(getPackageFolder(result)))).then(resolve).catch(reject);
         });
     });
 
 
 
     const PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPAATH = path.resolve(packageFolder, 'control', 'active_package');
-
     const setSoftwareAsActive = packageName => new Promise((resolve,  reject) => {
         const fileJSONContent = {
             active: true,
@@ -44,7 +44,6 @@ const getSoftware = (packageFolder, changeImage) => {
             });
         }).catch(reject);
     });
-
     const getActiveSoftware = () => new Promise((resolve, reject) => {
        fs.readFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPAATH, (err,result) => {
            if (err){
@@ -56,7 +55,7 @@ const getSoftware = (packageFolder, changeImage) => {
                resolve(null);
            }else{
                const activePackage = parsedResult.active_package;
-               resolve(activePackage);
+               resolve(getManifestInfo(getPackageFolder(activePackage)));
            }
        })
     });
