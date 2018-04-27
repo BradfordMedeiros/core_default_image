@@ -125,3 +125,40 @@ body {
     padding: 24px;
     color: lightgrey;
 }
+
+
+.main {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgb(10,10,10);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    animation: 3s fade_in forwards;
+}
+.text {
+    color: whitesmoke;
+    font-size: 32px;
+    font-family: courier;
+}
+
+@keyframes fade_in {
+    0% {
+        opacity: 1;
+
+    }
+    90% {
+        opacity: 1;
+        top: 0;
+        bottom: 0;
+    }
+    100% {
+        top: -100vh;
+        bottom: 100vh;
+
+    }
+} 
