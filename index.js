@@ -2,7 +2,6 @@
 const express  = require('express');
 const path = require('path');
 const process = require('process');
-const child_process = require('child_process');
 const getSoftware = require('./src/getSoftware');
 const getChangeImage = require('./src/getChangeImage');
 
