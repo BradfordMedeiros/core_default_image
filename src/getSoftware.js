@@ -34,7 +34,7 @@ const getSoftware = (packageFolder, changeImage) => {
             active: true,
             active_package: packageName,
         };
-        changeImage(packageName).then(() => {
+        changeImage(getPackageFolder(packageName)).then(() => {
             fs.writeFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPAATH, JSON.stringify(fileJSONContent), (err) => {
                 if (err){
                     reject(err);

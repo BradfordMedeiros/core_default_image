@@ -30,7 +30,8 @@ app.post('/software/:packageName', async (req, res) => {
        await software.setSoftwareAsActive(packageName);
        res.send('ok');
    }catch(e){
-       res.status(500).jsonp({ error: 'internal server error' })
+       console.log(e.toString());
+       res.status(500).jsonp({ error: 'internal server error' });
    }
 });
 
@@ -40,7 +41,7 @@ app.get('/software/installed', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.sendFile(HTML_FILE)
+    res.sendFile(HTML_FILE);
 });
 app.get('/style.css', (req, res) => {
     res.sendFile(path.resolve('./style.css'));
