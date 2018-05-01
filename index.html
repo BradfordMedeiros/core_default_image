@@ -23,7 +23,6 @@
 
 </body>
 
-
 <script>
     // data ////////////////////////
     const getAvailableSoftware = () => new Promise((resolve, reject) => {
@@ -159,7 +158,7 @@
 
     const timeDifference = new Date().getTime() - new Date(lastDateSplash).getTime();
 
-    const NUM_MS_BETWEEN_SPLASH = 60 * 1000;
+    const NUM_MS_BETWEEN_SPLASH = 4 * 60 * 60 * 1000;
     if (timeDifference  > NUM_MS_BETWEEN_SPLASH) {
         createSplash();
     }
