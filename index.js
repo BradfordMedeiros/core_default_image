@@ -1,15 +1,17 @@
 
 const express  = require('express');
 const path = require('path');
-const process = require('process');
+const proc = require('process');
 const getSoftware = require('./src/getSoftware');
 const getChangeImage = require('./src/getChangeImage');
+const getDogpack = require('./src/getDogpack');
 
-const IS_PRODUCTION = process.env.DEBUG != 'true';
+const IS_PRODUCTION = proc.env.DEBUG != 'true';
 
 const HTML_FILE = path.resolve('./index.html');
-const NAMED_PIPE_LOCATION =  process.env.AUTOMATE_DOCKER_PIPE || '/opt/automated/pipe';
-const PACKAGE_FOLDER = process.env.AUTOMATE_PACKAGE_PATH || '/opt/automated/packages';
+const NAMED_PIPE_LOCATION =  proc.env.AUTOMATE_DOCKER_PIPE || '/opt/automated/pipe';
+const PACKAGE_FOLDER = proc.env.AUTOMATE_PACKAGE_PATH || '/opt/automated/packages';
+const BIN_FOLDER = path.resolve('./bin');
 
 console.log('production: ', IS_PRODUCTION);
 console.log('named Pipe: ', NAMED_PIPE_LOCATION);
@@ -17,6 +19,10 @@ console.log('package folder: ', PACKAGE_FOLDER);
 
 const changeImage = getChangeImage(IS_PRODUCTION, NAMED_PIPE_LOCATION);
 const software = getSoftware(PACKAGE_FOLDER, changeImage);
+dogpack = getDogpack(path.resolve(PACKAGE_FOLDER, 'packages'), path.resolve(PACKAGE_FOLDER, 'data'), BIN_FOLDER);
+
+dogpack.saveDogpack('automate_0.6');
+
 
 const app = express();
 
