@@ -74,11 +74,17 @@
         if (isActive){
             element.className = element.className + ' selected';
         }
-        element.innerText =  softwareElement.name;
         element.style = `background: ${softwareElement.imageUrl}; background-size: cover;`;
         element.onclick = () => {
             onClick(softwareElement);
         };
+
+        const titleElement = document.createElement('div');
+        titleElement.innerText = softwareElement.name;
+        titleElement.className = 'software_name';
+
+        element.append(titleElement);
+
         return element;
     };
     const addSoftware = (software, activeSoftware, onClick) => {
@@ -151,6 +157,7 @@
 
     const LAST_SHOW_SPLASH = 'last_time_show_splash';
     const lastDateSplash = localStorage.getItem(LAST_SHOW_SPLASH);
+    localStorage.setItem(LAST_SHOW_SPLASH, new Date().toString());
     window.onbeforeunload = () => {
         localStorage.setItem(LAST_SHOW_SPLASH, new Date().toString());
         return null;

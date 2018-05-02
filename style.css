@@ -94,18 +94,17 @@ body {
     border-bottom: 4px solid #ababab;
     margin-bottom: -8px;
     margin-top: -8px;
-
     content: '';
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
+    pointer-events: none;
 
 }
 
 .available_sw:hover {
-    box-shadow: 0px 10px 18px 2px rgb(20,20,20);
-
+    box-shadow: 0px 4px 10px 1px rgb(20,20,20);
 }
 
 .status_title {
@@ -144,6 +143,20 @@ body {
     color: whitesmoke;
     font-size: 32px;
     font-family: courier;
+}
+
+.software_name{
+    height: 100%;
+    opacity: 0;
+}
+
+.software_name:hover {
+    opacity: 1;
+    padding: 8px;
+    font-size: 14px;
+    font-family: monospace;
+    color: white;
+    text-shadow: 0px 1px 1px black;
 }
 
 @keyframes fade_in {
