@@ -113,12 +113,11 @@
         const addSoftwareElements = addSoftware(software, activeSoftware, onSelectSoftware);
         element.append(addSoftwareElements);
     };
-    const swapToDiagnostics = (softwareName, dockerUrl) => {
+    const swapToDiagnostics = (softwareName) => {
         const element = document.querySelector('#main_body');
         element.innerText = '';
         element.append(createTitle('Diagnostics'));
         element.append(createSimpleElement('Installed Software', softwareName));
-        element.append(createSimpleElement('Software Container', dockerUrl));
     };
 
 
@@ -142,7 +141,7 @@
       },
       diagnostic: () => {
           getActiveSoftware().then(software => {
-              swapToDiagnostics(software ? software.name : 'None', software ?software.dockerUrl : 'None');
+              swapToDiagnostics(software ? software.name : 'None');
           });
       },
     };
