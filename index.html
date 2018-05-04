@@ -40,6 +40,14 @@
             response.json().then(resolve).catch(reject);
         }).catch(reject);
     });
+
+    // console only command //
+    const setSoftwareNull = () => new Promise((resolve, reject) => {
+        fetch(`/software_null`, {
+            method: 'post',
+        }).then(resolve).catch(reject);
+    });
+
     //////////////////////////////
 
     const createSimpleElement = (header, subtitle) => {

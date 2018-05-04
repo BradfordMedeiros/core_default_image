@@ -4,3 +4,5 @@ services:
     image: "bradfordmedeiros/automate_0.6.0"
     ports:
       - "9000:9000"
+    volumes:
+      - /home/brad/automate/core_default_image/mock_packages/data/automate_0.6/data:/automate/data

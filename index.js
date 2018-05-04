@@ -4,6 +4,7 @@ const path = require('path');
 const proc = require('process');
 const getSoftware = require('./src/getSoftware');
 const getChangeImage = require('./src/getChangeImage');
+const getBringDown = require('./src/getBringDown');
 const getDogpack = require('./src/getDogpack');
 
 const IS_PRODUCTION = proc.env.DEBUG != 'true';
@@ -18,11 +19,9 @@ console.log('named Pipe: ', NAMED_PIPE_LOCATION);
 console.log('package folder: ', PACKAGE_FOLDER);
 
 const changeImage = getChangeImage(IS_PRODUCTION, NAMED_PIPE_LOCATION);
-const software = getSoftware(PACKAGE_FOLDER, changeImage);
-dogpack = getDogpack(path.resolve(PACKAGE_FOLDER, 'packages'), path.resolve(PACKAGE_FOLDER, 'data'), BIN_FOLDER);
-
-dogpack.saveDogpack('automate_0.6');
-
+const bringDown = getBringDown(IS_PRODUCTION);
+const software = getSoftware(PACKAGE_FOLDER, changeImage, bringDown);
+const dogpack = getDogpack(path.resolve(PACKAGE_FOLDER, 'packages'), path.resolve(PACKAGE_FOLDER, 'data'), BIN_FOLDER);
 
 const app = express();
 
@@ -39,6 +38,15 @@ app.post('/software/:packageName', async (req, res) => {
        console.log(e.toString());
        res.status(500).jsonp({ error: 'internal server error' });
    }
+});
+app.post('/software_null', async  (req, res) => {
+    try {
+        await software.setSoftwareAsInactive();
+        res.send('ok');
+    }catch(e){
+        console.log(e.toString());
+        res.status(500).jsonp({ error: 'internal server error' });
+    }
 });
 
 app.get('/software/installed', async (req, res) => {

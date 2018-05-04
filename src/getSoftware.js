@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const getSoftware = (packageFolder, changeImage) => {
+const getSoftware = (packageFolder, changeImage, bringDown) => {
 
     const PACKAGES_PACKAGE_FOLDER = path.resolve(packageFolder, 'packages');
     const getPackageFolder = packageName => path.resolve(PACKAGES_PACKAGE_FOLDER, packageName);
@@ -44,6 +44,21 @@ const getSoftware = (packageFolder, changeImage) => {
             });
         }).catch(reject);
     });
+    const setSoftwareAsInactive = () => new Promise((resolve, reject) => {
+        const fileJSONContent = {
+            active: false,
+        };
+        bringDown().then(() => {
+            fs.writeFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPAATH, JSON.stringify(fileJSONContent), (err) => {
+                if (err){
+                    reject(err);
+                    return;
+                }
+                resolve();
+            });
+        }).catch(reject);
+    });
+
     const getActiveSoftware = () => new Promise((resolve, reject) => {
        fs.readFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPAATH, (err,result) => {
            if (err){
@@ -63,6 +78,7 @@ const getSoftware = (packageFolder, changeImage) => {
     const software = {
         getAvailableSoftware,
         setSoftwareAsActive,
+        setSoftwareAsInactive,
         getActiveSoftware,
     };
 
