@@ -12,8 +12,9 @@
                 [no-dogma] HUB
                 <div id="app_subtitle">share haxor content</div>
                 <div id="options">
-                    <div onclick="swapScreens('software')" class="option">Software</div>
+                    <div onclick="swapScreens('software')" class="option">software</div>
                     <div onclick="swapScreens('diagnostic')" class="option">diagnostics</div>
+                    <div onclick="swapScreens('storage')" class="option">storage</div>
                 </div>
             </div>
         </div>
@@ -71,9 +72,13 @@
             infoContent.innerText = rightElement;
             titleElement.append(infoContent)
         }
-
-
         return titleElement;
+    };
+    const createButton = label => {
+        const button = document.createElement('button');
+        button.className = "custom_button";
+        button.innerText = label;
+        return button;
     };
 
     const createSoftwareElement = (softwareElement, isActive, onClick) => {
@@ -119,7 +124,16 @@
         element.append(createTitle('Diagnostics'));
         element.append(createSimpleElement('Installed Software', softwareName));
     };
-
+    const swapToStorage = () => {
+        const element = document.querySelector('#main_body');
+        element.innerText = '';
+        element.append(createTitle('Storage'));
+        const simpleElement = createSimpleElement('automate_0.6', '12MB - last changed 2/19/11');
+        simpleElement.append(createButton('delete'));
+        simpleElement.append(createButton('download'));
+        simpleElement.append(createButton('upload'));
+        element.append(simpleElement);
+    };
 
     const screenToDrawMap = {
       software: () => {
@@ -144,6 +158,11 @@
               swapToDiagnostics(software ? software.name : 'None');
           });
       },
+      storage: () => {
+          getActiveSoftware().then(software => {
+              swapToStorage();
+          });
+      }
     };
 
     const swapScreens = (screen) => {
