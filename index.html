@@ -142,7 +142,7 @@
       },
       diagnostic: () => {
           getActiveSoftware().then(software => {
-              swapToDiagnostics(software.name, software.dockerUrl);
+              swapToDiagnostics(software ? software.name : 'None', software ?software.dockerUrl : 'None');
           });
       },
     };
