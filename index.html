@@ -144,15 +144,19 @@
         const element = document.querySelector('#main_body');
         element.innerText = '';
         element.append(createTitle('Developer Options'));
-        const cloudSw = createSimpleElement('Cloud Software Server', 'localhost');
+        const cloudSw = createSimpleElement('Cloud Software Server', '[set to localhost] - server to retrieve new sw from');
         cloudSw.append(createInput());
 
         const simpleButton = document.createElement('button');
         simpleButton.className = "simple_button";
         simpleButton.innerText = "update";
         cloudSw.append(simpleButton);
-        
         element.append(cloudSw);
+
+        const resetContainer = createSimpleElement('Bring down', 'bring down container without replacement');
+        resetContainer.append(createButton('bring down'))
+        element.append(resetContainer);
+
     };
 
     const screenToDrawMap = {

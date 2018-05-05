@@ -77,7 +77,7 @@ body {
     cursor: pointer;
 }
 .custom_button:hover {
-    background: red;
+    background: steelblue;
     color: whitesmoke;
     border: 1px solid whitesmoke;
     opacity: 0.7;
@@ -141,10 +141,8 @@ body {
 
 .status_title {
     font-size: 32px;
-    color: whitesmoke;
+    color: white;
     padding: 24px;
-    background: #353434;
-    border: 1px solid black;
 }
 .status_subtitle{
     font-size: 18px;
