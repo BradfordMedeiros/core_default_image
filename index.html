@@ -130,15 +130,20 @@
         element.append(createTitle('Diagnostics'));
         element.append(createSimpleElement('Installed Software', softwareName));
     };
-    const swapToStorage = () => {
+    const swapToStorage = storages => {
         const element = document.querySelector('#main_body');
         element.innerText = '';
         element.append(createTitle('Storage'));
-        const simpleElement = createSimpleElement('automate_0.6', '12MB - last changed 2/19/11');
-        simpleElement.append(createButton('delete'));
-        simpleElement.append(createButton('download'));
-        simpleElement.append(createButton('upload'));
-        element.append(simpleElement);
+
+        const storageElements = storages.map(storage => {
+            const simpleElement = createSimpleElement(storage.title, `${storage.size} - last changed ${storage.modified}`);
+            simpleElement.append(createButton('delete'));
+            simpleElement.append(createButton('download'));
+            simpleElement.append(createButton('upload'));
+            return simpleElement;
+        });
+
+        storageElements.forEach(el => element.append(el));
     };
     const swapToDev = () => {
         const element = document.querySelector('#main_body');
@@ -182,7 +187,12 @@
               swapToDiagnostics(software ? software.name : 'None');
           });
       },
-      storage: swapToStorage,
+      storage: () => {
+          swapToStorage([
+              { title: 'automate 0.6', size: '12MB', modified: '1/19/18' },
+              { title: 'another thing', size: '1GB', modified: '2/21/18' }
+          ]);
+      },
       dev: swapToDev,
 
     };
