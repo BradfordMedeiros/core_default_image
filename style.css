@@ -72,8 +72,8 @@ body {
     font-size: 22px;
     background: none;
     border: none;
-    color: black;
-    border: 1px solid black;
+    color: darkgrey;
+    border: 1px solid #121111;
     cursor: pointer;
 }
 .custom_button:hover {
@@ -81,6 +81,22 @@ body {
     color: whitesmoke;
     border: 1px solid whitesmoke;
     opacity: 0.7;
+}
+.custom_input {
+    background: none;
+    border: none;
+    border-bottom: 1px solid grey;
+    width: 400px;
+    color: steelblue;
+    font-size: 28px;
+}
+.simple_button {
+    padding: 18px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
 }
 
 
@@ -127,6 +143,8 @@ body {
     font-size: 32px;
     color: whitesmoke;
     padding: 24px;
+    background: #353434;
+    border: 1px solid black;
 }
 .status_subtitle{
     font-size: 18px;

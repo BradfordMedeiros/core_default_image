@@ -15,6 +15,7 @@
                     <div onclick="swapScreens('software')" class="option">software</div>
                     <div onclick="swapScreens('diagnostic')" class="option">diagnostics</div>
                     <div onclick="swapScreens('storage')" class="option">storage</div>
+                    <div onclick="swapScreens('dev')" class="option">dev options</div>
                 </div>
             </div>
         </div>
@@ -80,6 +81,11 @@
         button.innerText = label;
         return button;
     };
+    const createInput = () => {
+        const input = document.createElement('input');
+        input.className = "custom_input";
+        return input;
+    };
 
     const createSoftwareElement = (softwareElement, isActive, onClick) => {
         const element = document.createElement('div');
@@ -134,6 +140,20 @@
         simpleElement.append(createButton('upload'));
         element.append(simpleElement);
     };
+    const swapToDev = () => {
+        const element = document.querySelector('#main_body');
+        element.innerText = '';
+        element.append(createTitle('Developer Options'));
+        const cloudSw = createSimpleElement('Cloud Software Server', 'localhost');
+        cloudSw.append(createInput());
+
+        const simpleButton = document.createElement('button');
+        simpleButton.className = "simple_button";
+        simpleButton.innerText = "update";
+        cloudSw.append(simpleButton);
+        
+        element.append(cloudSw);
+    };
 
     const screenToDrawMap = {
       software: () => {
@@ -158,11 +178,9 @@
               swapToDiagnostics(software ? software.name : 'None');
           });
       },
-      storage: () => {
-          getActiveSoftware().then(software => {
-              swapToStorage();
-          });
-      }
+      storage: swapToStorage,
+      dev: swapToDev,
+
     };
 
     const swapScreens = (screen) => {
