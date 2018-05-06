@@ -1,5 +1,4 @@
 
-const express  = require('express');
 const path = require('path');
 const proc = require('process');
 const getSoftware = require('./src/getSoftware');
@@ -20,48 +19,16 @@ console.log('package folder: ', PACKAGE_FOLDER);
 
 const changeImage = getChangeImage(IS_PRODUCTION, NAMED_PIPE_LOCATION);
 const bringDown = getBringDown(IS_PRODUCTION);
-const software = getSoftware(PACKAGE_FOLDER, changeImage, bringDown);
-const dogpack = getDogpack(path.resolve(PACKAGE_FOLDER, 'packages'), path.resolve(PACKAGE_FOLDER, 'data'), BIN_FOLDER);
+const dogpack = getDogpack(path.resolve(PACKAGE_FOLDER, 'packages'), path.resolve(PACKAGE_FOLDER, 'data'), path.resolve(PACKAGE_FOLDER, 'packs'), BIN_FOLDER);
+const software = getSoftware(PACKAGE_FOLDER, changeImage, bringDown, dogpack);
 
-const app = express();
-
-app.get('/software', async (req, res) => {
-   res.jsonp(await software.getAvailableSoftware());
-});
-
-app.post('/software/:packageName', async (req, res) => {
-   const packageName = decodeURIComponent(req.params.packageName);
-   try {
-       await software.setSoftwareAsActive(packageName);
-       res.send('ok');
-   }catch(e){
-       console.log(e.toString());
-       res.status(500).jsonp({ error: 'internal server error' });
-   }
-});
-app.post('/software_null', async  (req, res) => {
-    try {
-        await software.setSoftwareAsInactive();
-        res.send('ok');
-    }catch(e){
-        console.log(e.toString());
-        res.status(500).jsonp({ error: 'internal server error' });
-    }
-});
-
-app.get('/software/installed', async (req, res) => {
-   const response = await software.getActiveSoftware();
-   res.status(200).jsonp(response);
-});
-
-app.get('/', (req, res) => {
-    res.sendFile(HTML_FILE);
-});
-app.get('/style.css', (req, res) => {
-    res.sendFile(path.resolve('./style.css'));
-});
+const createRoutes = require('./src/http/createRoutes');
 
 const PORT = 9999;
-app.listen(PORT, () => {
+createRoutes({ software, HTML_FILE }).listen(PORT, () => {
    console.log('listening on port: ', PORT);
 });
+
+
+
+

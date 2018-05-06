@@ -3,13 +3,34 @@ const child_process = require('child_process');
 const fs = require('fs');
 const rimraf = require('rimraf');
 
-const getDogpack = (packagesFolder, dataFolder, binLocation) => {
+const getDogpack = (packagesFolder, dataFolder, packsFolder, binLocation) => {
 
     const SAVE_DOGPACK_SCRIPT = path.resolve(binLocation, 'save-pack.sh');
     const INSTALL_PACK_SCRIPT = path.resolve(binLocation, 'install-pack.sh');
 
     const getPackageFullPath = packageName => path.resolve(packagesFolder,  packageName);
     const getDataFullPath = packageNmae => path.resolve(dataFolder, packageNmae);
+
+    const getDogpacks = () => new Promise((resolve, reject) => {
+        fs.readdir(packsFolder, (err, dogpackFolders) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+
+            const files = {};
+            Promise.all(dogpackFolders.map(async dogpakFolder => {
+                const dogpackDataPromise = getPakDataForFolder(path.resolve(packsFolder, dogpakFolder));
+                files[dogpakFolder] = await dogpackDataPromise;
+                return dogpackDataPromise;
+            })).then(() => resolve(files)).catch(reject);
+        });
+    });
+    const getPakDataForFolder = productFolder => new Promise((resolve, reject) => {
+        fs.readdir(productFolder, (err, packFiles) => {
+            resolve(packFiles);
+        });
+    });
 
     const saveDogpack = packageName => new Promise((resolve, reject) => {
         const command = `${SAVE_DOGPACK_SCRIPT} ${getPackageFullPath(packageName)}`;
@@ -57,6 +78,7 @@ const getDogpack = (packagesFolder, dataFolder, binLocation) => {
     });
 
     return ({
+        getDogpacks,
         saveDogpack,
         mountDogpack,
         unmountDogpack,

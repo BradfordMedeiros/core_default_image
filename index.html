@@ -33,7 +33,7 @@
        }).catch(reject);
     });
     const setSoftwareAsActive = packageName => new Promise((resolve, reject) => {
-        fetch(`/software/${encodeURIComponent(packageName)}`, {
+        fetch(`/software/set_active/${encodeURIComponent(packageName)}`, {
             method: 'post',
         }).then(resolve).catch(reject);
     });
@@ -43,9 +43,21 @@
         }).catch(reject);
     });
 
+    const getStorage = () => new Promise((resolve, reject) => {
+       fetch('/storage').then(response => {
+          response.json().then(resolve).catch(reject);
+       });
+    });
+    const deleteStorage = storage => new Promise((resolve, reject) => {
+        const storageId = storage.name;
+        fetch(`/storage/${storageId}`, {
+            method: 'delete',
+        }).then(resolve).catch(reject);
+    });
+
     // console only command //
     const setSoftwareNull = () => new Promise((resolve, reject) => {
-        fetch(`/software_null`, {
+        fetch(`/software/software_null`, {
             method: 'post',
         }).then(resolve).catch(reject);
     });
@@ -130,22 +142,26 @@
         element.append(createTitle('Diagnostics'));
         element.append(createSimpleElement('Installed Software', softwareName));
     };
-    const swapToStorage = storages => {
+    const swapToStorage = (storages, onDeleteStorage) => {
         const element = document.querySelector('#main_body');
         element.innerText = '';
         element.append(createTitle('Storage'));
 
         const storageElements = storages.map(storage => {
             const simpleElement = createSimpleElement(storage.title, `${storage.size} - last changed ${storage.modified}`);
-            simpleElement.append(createButton('delete'));
-            simpleElement.append(createButton('download'));
-            simpleElement.append(createButton('upload'));
+            const deleteButton = createButton('delete');
+            deleteButton.onclick = () => {
+              onDeleteStorage(storage);
+            };
+            simpleElement.append(deleteButton);
+            //simpleElement.append(createButton('download'));
+            //simpleElement.append(createButton('upload'));
             return simpleElement;
         });
 
         storageElements.forEach(el => element.append(el));
     };
-    const swapToDev = () => {
+    const swapToDev = (onBringDown) => {
         const element = document.querySelector('#main_body');
         element.innerText = '';
         element.append(createTitle('Developer Options'));
@@ -159,9 +175,11 @@
         element.append(cloudSw);
 
         const resetContainer = createSimpleElement('Bring down', 'bring down container without replacement');
-        resetContainer.append(createButton('bring down'))
-        element.append(resetContainer);
+        const bringDown = createButton('bring down');
+        bringDown.onclick = onBringDown;
+        resetContainer.append(bringDown);
 
+        element.append(resetContainer);
     };
 
     const screenToDrawMap = {
@@ -188,12 +206,15 @@
           });
       },
       storage: () => {
-          swapToStorage([
-              { title: 'automate 0.6', size: '12MB', modified: '1/19/18' },
-              { title: 'another thing', size: '1GB', modified: '2/21/18' }
-          ]);
+          getStorage().then(storages => {
+              swapToStorage(storages, storage => {
+                  deleteStorage(storage);
+              })
+          });
       },
-      dev: swapToDev,
+      dev: () => {
+          swapToDev(setSoftwareNull);
+      },
 
     };
 

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const getSoftware = (packageFolder, changeImage, bringDown) => {
+const getSoftware = (packageFolder, changeImage, bringDown, dogpack) => {
 
     const PACKAGES_PACKAGE_FOLDER = path.resolve(packageFolder, 'packages');
     const getPackageFolder = packageName => path.resolve(PACKAGES_PACKAGE_FOLDER, packageName);
@@ -28,14 +28,14 @@ const getSoftware = (packageFolder, changeImage, bringDown) => {
 
 
 
-    const PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPAATH = path.resolve(packageFolder, 'control', 'active_package');
+    const PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPATH = path.resolve(packageFolder, 'control', 'active_package');
     const setSoftwareAsActive = packageName => new Promise((resolve,  reject) => {
         const fileJSONContent = {
             active: true,
             active_package: packageName,
         };
         changeImage(getPackageFolder(packageName)).then(() => {
-            fs.writeFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPAATH, JSON.stringify(fileJSONContent), (err) => {
+            fs.writeFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPATH, JSON.stringify(fileJSONContent), (err) => {
                 if (err){
                     reject(err);
                     return;
@@ -49,7 +49,7 @@ const getSoftware = (packageFolder, changeImage, bringDown) => {
             active: false,
         };
         bringDown().then(() => {
-            fs.writeFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPAATH, JSON.stringify(fileJSONContent), (err) => {
+            fs.writeFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPATH, JSON.stringify(fileJSONContent), (err) => {
                 if (err){
                     reject(err);
                     return;
@@ -60,7 +60,7 @@ const getSoftware = (packageFolder, changeImage, bringDown) => {
     });
 
     const getActiveSoftware = () => new Promise((resolve, reject) => {
-       fs.readFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPAATH, (err,result) => {
+       fs.readFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPATH, (err,result) => {
            if (err){
                reject(err);
                return;
