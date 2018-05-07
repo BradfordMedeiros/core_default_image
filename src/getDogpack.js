@@ -2,14 +2,11 @@ const path = require('path');
 const child_process = require('child_process');
 const fs = require('fs');
 const rimraf = require('rimraf');
+const tar = require('tar');
 
-const getDogpack = (packagesFolder, dataFolder, packsFolder, binLocation) => {
-
-    const SAVE_DOGPACK_SCRIPT = path.resolve(binLocation, 'save-pack.sh');
-    const INSTALL_PACK_SCRIPT = path.resolve(binLocation, 'install-pack.sh');
-
-    const getPackageFullPath = packageName => path.resolve(packagesFolder,  packageName);
-    const getDataFullPath = packageNmae => path.resolve(dataFolder, packageNmae);
+const getDogpack = (packagesFolder, dataFolder, packsFolder) => {
+    const getPackagePackPathFolder = packageName => path.resolve(packsFolder, packageName);
+    const getDefaultPackagePak = packageName => path.resolve(getPackagePackPathFolder(packageName), `${packageName}.dogpak`);
 
     const getDogpacks = () => new Promise((resolve, reject) => {
         fs.readdir(packsFolder, (err, dogpackFolders) => {
@@ -20,7 +17,7 @@ const getDogpack = (packagesFolder, dataFolder, packsFolder, binLocation) => {
 
             const files = {};
             Promise.all(dogpackFolders.map(async dogpakFolder => {
-                const dogpackDataPromise = getPakDataForFolder(path.resolve(packsFolder, dogpakFolder));
+                const dogpackDataPromise = getPakDataForFolder(getPackagePackPathFolder(dogpakFolder));
                 files[dogpakFolder] = await dogpackDataPromise;
                 return dogpackDataPromise;
             })).then(() => resolve(files)).catch(reject);
@@ -28,36 +25,46 @@ const getDogpack = (packagesFolder, dataFolder, packsFolder, binLocation) => {
     });
     const getPakDataForFolder = productFolder => new Promise((resolve, reject) => {
         fs.readdir(productFolder, (err, packFiles) => {
+            if (err){
+                reject(err);
+                return;
+            }
             resolve(packFiles);
         });
     });
 
     const saveDogpack = packageName => new Promise((resolve, reject) => {
-        const command = `${SAVE_DOGPACK_SCRIPT} ${getPackageFullPath(packageName)}`;
-        child_process.exec(command, err => {
-            if (err) {
+        fs.mkdir(getPackagePackPathFolder(packageName), () => {  // intentionally ignore error since it doesn't matter (always?)
+            const dogpackName = getDefaultPackagePak(packageName);
+            tar.c({
+                cwd: dataFolder,
+                file: dogpackName,
+            }, ['.']).then(resolve).catch(reject);
+        });
+    });
+
+    const loadDogpack = packageName => new Promise((resolve, reject) => {
+        const dogpackName = getDefaultPackagePak(packageName);
+        tar.x({
+            file: dogpackName,
+            cwd: dataFolder,
+        }).then(resolve).catch(reject);
+    });
+
+
+    const unloadDogpack = () => new Promise((resolve, reject) => {
+        rimraf(path.resolve(dataFolder,'*'), err => {
+            if(err){
                 reject(err);
                 return;
             }
             resolve();
-        })
-    });
-
-    const mountDogpack = dogpackName => new Promise((resolve, reject) => {
-        const command = `${INSTALL_PACK_SCRIPT} ${getPackageFullPath(dogpackName)}`;
-        child_process.exec(command, err => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve();
-        })
+        });
     });
 
 
-    const unmountDogpack = dogpackName => new Promise((resolve, reject) => {
-        const folderPath = getDataFullPath(dogpackName);
-        rimraf(folderPath, err => {
+    const deleteStorage = packageName => new Promise((resolve, reject) => {
+        rimraf(getPackagePackPathFolder(packageName), err => {
             if (err){
                 reject(err);
                 return;
@@ -66,24 +73,13 @@ const getDogpack = (packagesFolder, dataFolder, packsFolder, binLocation) => {
         })
     });
 
-    const mountEmptyPack =  dogpackName => new Promise((resolve, reject) => {
-       const folderPath = getDataFullPath(dogpackName);
-       fs.mkdir(folderPath, err => {
-           if(err){
-               reject(err);
-               return;
-           }
-           resolve();
-       })
-    });
-
     return ({
         getDogpacks,
         saveDogpack,
-        mountDogpack,
-        unmountDogpack,
-        mountEmptyPack,
-    })
+        loadDogpack,
+        unloadDogpack,
+        deleteStorage,
+    });
 };
 
 module.exports = getDogpack;

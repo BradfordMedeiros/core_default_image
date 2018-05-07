@@ -49,8 +49,7 @@
        });
     });
     const deleteStorage = storage => new Promise((resolve, reject) => {
-        const storageId = storage.name;
-        fetch(`/storage/${storageId}`, {
+        fetch(`/storage/${storage.title}`, {
             method: 'delete',
         }).then(resolve).catch(reject);
     });

@@ -19,7 +19,7 @@ console.log('package folder: ', PACKAGE_FOLDER);
 
 const changeImage = getChangeImage(IS_PRODUCTION, NAMED_PIPE_LOCATION);
 const bringDown = getBringDown(IS_PRODUCTION);
-const dogpack = getDogpack(path.resolve(PACKAGE_FOLDER, 'packages'), path.resolve(PACKAGE_FOLDER, 'data'), path.resolve(PACKAGE_FOLDER, 'packs'), BIN_FOLDER);
+const dogpack = getDogpack(path.resolve(PACKAGE_FOLDER, 'packages'), path.resolve(PACKAGE_FOLDER, 'data'), path.resolve(PACKAGE_FOLDER, 'packs'));
 const software = getSoftware(PACKAGE_FOLDER, changeImage, bringDown, dogpack);
 
 const createRoutes = require('./src/http/createRoutes');
