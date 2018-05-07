@@ -1,5 +1,4 @@
 const path = require('path');
-const child_process = require('child_process');
 const fs = require('fs');
 const rimraf = require('rimraf');
 const tar = require('tar');
