@@ -34,15 +34,20 @@ const getSoftware = (packageFolder, changeImage, bringDown, dogpack) => {
             active: true,
             active_package: packageName,
         };
-        changeImage(getPackageFolder(packageName)).then(() => {
-            fs.writeFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPATH, JSON.stringify(fileJSONContent), (err) => {
-                if (err){
-                    reject(err);
-                    return;
-                }
-                resolve();
-            });
-        }).catch(reject);
+        dogpack.dogpackExists(packageName).then(saveExists => {
+           const installSave = saveExists ? dogpack.loadDogpack : () => new Promise(resolve => resolve());
+           installSave(packageName).then(() => {
+               changeImage(getPackageFolder(packageName)).then(() => {
+                   fs.writeFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPATH, JSON.stringify(fileJSONContent), (err) => {
+                       if (err){
+                           reject(err);
+                           return;
+                       }
+                       resolve();
+                   });
+               }).catch(reject);
+           }).catch(reject);
+        });
     });
     const setSoftwareAsInactive = () => new Promise((resolve, reject) => {
         const fileJSONContent = {

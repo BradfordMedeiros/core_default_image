@@ -32,6 +32,12 @@ const getDogpack = (packagesFolder, dataFolder, packsFolder) => {
         });
     });
 
+    const dogpackExists = packageName => new Promise(resolve => {
+        const dogpackPath = getDefaultPackagePak(packageName);
+        fs.exists(dogpackPath, resolve);
+    });
+
+
     const saveDogpack = packageName => new Promise((resolve, reject) => {
         fs.mkdir(getPackagePackPathFolder(packageName), () => {  // intentionally ignore error since it doesn't matter (always?)
             const dogpackName = getDefaultPackagePak(packageName);
@@ -49,7 +55,6 @@ const getDogpack = (packagesFolder, dataFolder, packsFolder) => {
             cwd: dataFolder,
         }).then(resolve).catch(reject);
     });
-
 
     const unloadDogpack = () => new Promise((resolve, reject) => {
         rimraf(path.resolve(dataFolder,'*'), err => {
@@ -74,6 +79,7 @@ const getDogpack = (packagesFolder, dataFolder, packsFolder) => {
 
     return ({
         getDogpacks,
+        dogpackExists,
         saveDogpack,
         loadDogpack,
         unloadDogpack,
