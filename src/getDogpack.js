@@ -17,7 +17,11 @@ const getDogpack = (packagesFolder, dataFolder, packsFolder) => {
             const files = {};
             Promise.all(dogpackFolders.map(async dogpakFolder => {
                 const dogpackDataPromise = getPakDataForFolder(getPackagePackPathFolder(dogpakFolder));
-                files[dogpakFolder] = await dogpackDataPromise;
+                files[dogpakFolder] = (await dogpackDataPromise).map(storage => ({
+                    title: storage,
+                    size: 'unknown',
+                    modified: 'unknown',
+                }))
                 return dogpackDataPromise;
             })).then(() => resolve(files)).catch(reject);
         });

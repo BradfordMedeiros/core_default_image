@@ -45,11 +45,22 @@
 
     const getStorage = () => new Promise((resolve, reject) => {
        fetch('/storage').then(response => {
-          response.json().then(resolve).catch(reject);
+          response.json().then(storages => {
+              const storageValues = [ ];
+              Object.keys(storages).forEach(storageAppName => {
+                  storages[storageAppName].forEach(storageDogpack => {
+                      storageValues.push({
+                          storageAppName,
+                          ...storageDogpack
+                      });
+                  })
+              });
+              resolve(storageValues);
+          }).catch(reject);
        });
     });
     const deleteStorage = storage => new Promise((resolve, reject) => {
-        fetch(`/storage/${storage.title}`, {
+        fetch(`/storage/${storage.storageAppName}`, {
             method: 'delete',
         }).then(resolve).catch(reject);
     });
@@ -188,7 +199,7 @@
              const availableSoftware = result[0];
              const activeSoftware = result[1];
              swapToSoftwareScreen(availableSoftware, activeSoftware, sw => {
-                 swapScreens('software', true);
+                 swapScreens('software');
                  setSoftwareAsActive(sw.name).then(() => {
                      if (activeSoftware && activeSoftware.name !== sw.name){
                          if (currentScreen === 'software'){
@@ -207,7 +218,9 @@
       storage: () => {
           getStorage().then(storages => {
               swapToStorage(storages, storage => {
-                  deleteStorage(storage);
+                  deleteStorage(storage).then(() => {
+                      swapScreens('storage');
+                  })
               })
           });
       },

@@ -17,12 +17,12 @@ const createStorageRoutes = ({ storage }) => {
     });
     app.delete('/:name', async (req, res) => {
         try {
-
+            await (storage.deleteStorage(req.params.name));
+            res.send('ok');
         }catch(e){
             console.error(e.toString());
             res.status(500).jsonp({error: 'internal server error'});
         }
-        res.send('ok');
     });
 
     return app;

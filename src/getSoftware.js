@@ -80,11 +80,16 @@ const getSoftware = (packageFolder, changeImage, bringDown, dogpack) => {
        })
     });
 
+    const deleteStorage = dogpack.deleteStorage;
+    const getStorage = dogpack.getDogpacks;
+
     const software = {
         getAvailableSoftware,
         setSoftwareAsActive,
         setSoftwareAsInactive,
         getActiveSoftware,
+        deleteStorage,
+        getStorage,
     };
 
     return software;

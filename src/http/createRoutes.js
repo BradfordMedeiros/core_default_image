@@ -15,13 +15,8 @@ const createRoutes = ({ software, HTML_FILE }) => {
 
     app.use('/software', createSoftwareRoutes({ software }));
     app.use('/storage', createStorageRoutes({ storage: {
-        getStorage: () => {
-            const storage = [
-                {title: 'automate 0.6', size: '12MB', modified: '1/19/18'},
-                {title: 'another thing', size: '2GB', modified: '2/21/18'}
-            ];
-            return storage;
-        }
+        getStorage: software.getStorage,
+        deleteStorage: software.deleteStorage,
     }}));
 
 
