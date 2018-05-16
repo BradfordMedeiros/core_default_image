@@ -53,14 +53,23 @@ const getSoftware = (packageFolder, changeImage, bringDown, dogpack) => {
         const fileJSONContent = {
             active: false,
         };
-        bringDown().then(() => {
-            fs.writeFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPATH, JSON.stringify(fileJSONContent), (err) => {
-                if (err){
-                    reject(err);
-                    return;
-                }
-                resolve();
-            });
+
+        getActiveSoftware().then(software => {
+          const softwareName = software.name;
+          dogpack.saveDogpack(softwareName).then(() => {
+              dogpack.unloadDogpack().then(() => {
+                bringDown().then(() => {
+                  fs.writeFile(PACKAGES_CONTROL_ACTIVE_PACKAGE_FILEPATH, JSON.stringify(fileJSONContent), (err) => {
+                    if (err){
+                      reject(err);
+                      return;
+                    }
+                    resolve();
+                });
+              }).catch(reject);
+              
+            }).catch(reject);
+          }).catch(reject);
         }).catch(reject);
     });
 
